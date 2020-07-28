@@ -7,19 +7,50 @@ class App extends Component{
   constructor(props){
     super(props)
 
-    this.notes = [
-      {
-        id: 1,
-        text: 'watch youtube'
-      },{
-        id: 2,
-        text: 'cook dinner'
-      },{
-        id: 3,
-        text: 'play league of legends'
-      }
-    ]
+    this.state = {
+      notes: [
+        {
+          id: 1,
+          text: 'watch youtube'
+        },{
+          id: 2,
+          text: 'cook dinner'
+        },{
+          id: 3,
+          text: 'play league of legends'
+        }
+      ],
+      noteInputValue: ''
+      
+    }
+  
   }
+
+  handleNoteInputChange = (e)=>{
+    this.setState({noteInputValue:e.target.value})
+    
+  }
+  handleAddbtnClick = (e)=>{
+    e.preventDefault()
+    var note = {
+      id:Date.now(),
+      text:this.state.noteInputValue
+    }
+    var newNotes = [note, ...this.state.notes]
+    this.setState({
+      notes:newNotes,
+      noteInputValue: ''
+    })
+  }
+  handleNoteDelet = (e)=>{
+    var noteIdtoDelete = e.target.id
+    var notes = this.state.notes
+    var filteredNotes = notes.filter((item)=>{
+      return item.id != noteIdtoDelete
+    })
+    this.setState({notes:filteredNotes})
+  }
+
   render(){
     //practicing git commit
     return (
@@ -27,12 +58,12 @@ class App extends Component{
         <div className="container">
           <div className="notes">
             {
-              this.notes.map((note)=>{
+              this.state.notes.map((note)=>{
                 return (
-                  <div className="note">
+                  <div className="note" key={note.id}>
 
                     <div className="note-body">
-                      <i className="far fa-times-circle note-remove"></i>
+                      <i id={note.id} className="far fa-times-circle note-remove" onClick={this.handleNoteDelet}></i>
                       <div className="note-text">
                         {note.text}
                       </div>
@@ -48,10 +79,10 @@ class App extends Component{
               <form className="note-body">
                   <div className="form-group">
                     <label htmlFor="note-input">New note</label>
-                    <input type="text" className="form-control" id="note-input"/>
+                    <input type="text" className="form-control" id="note-input" value={this.state.noteInputValue} onChange={this.handleNoteInputChange} />
                   </div>
             
-                  <button type="submit" className="btn btn-primary">Add</button>
+                  <button type="submit" className="btn btn-primary" onClick={this.handleAddbtnClick}>Add</button>
               </form>
               
             </div>
